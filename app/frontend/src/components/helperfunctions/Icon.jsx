@@ -13,9 +13,9 @@ export const Icon = ({ icon = "info" }) => {
         <g
           id="Symbols"
           stroke="none"
-          stroke-width="1"
+          strokeWidth="1"
           fill="none"
-          fill-rule="evenodd"
+          fillRule="evenodd"
         >
           <g id="product-logos/cloudera-logo/cloudera-white">
             <rect fill="#000000" x="0" y="0" width="100" height="12"></rect>

@@ -1,34 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Select } from "antd";
-import { loadJSONData } from "../../helperfunctions/HelperFunctions";
-import "./officeselector.css";
-
+// import { loadJSONData } from "../../helperfunctions/HelperFunctions";
 const { Option } = Select;
-const OfficeSelector = () => {
+const OfficeSelector = (props) => {
+  const locations = props.locations || [];
+  const [selectedLocation, setselectedLocation] = useState(0);
+
+  const workLocationList = locations.map((data, i) => {
+    return (
+      <Option value={data.work_location} key={"locrow" + i}>
+        {" "}
+        {data.work_location}{" "}
+      </Option>
+    );
+  });
   return (
-    <div className=" hover:bg-opacity-40 bg-opacity-20 bg-gray-500 p-3 h-full">
-      <div className="mb-2 text-sm"> Office Selector </div>
-      <Select
-        defaultValue={"US Brooklyn New York"}
-        showSearch
-        style={{ width: 200 }}
-        placeholder="Select a location"
-        optionFilterProp="children"
-        // onChange={onChange}
-        // onFocus={onFocus}
-        // onBlur={onBlur}
-        // onSearch={onSearch}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        <Option value="jack" selected>
-          US Brooklyn New York
-        </Option>
-        <Option value="lucy">US Santa Clara California</Option>
-        <Option value="tom">Tom</Option>
-      </Select>
-    </div>
+    locations.length > 0 && (
+      <div className="mt-2   inline-block rounded-sm   bg-white p-3  bg-opacity-90 ">
+        <div className="mb-2 text-sm font-semibold"> Office Selector </div>
+        <Select
+          defaultValue={locations[selectedLocation].work_location}
+          showSearch
+          style={{ width: 200 }}
+          placeholder="Select a location"
+          optionFilterProp="children"
+          // onChange={onChange}
+          // onFocus={onFocus}
+          // onBlur={onBlur}
+          // onSearch={onSearch}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {workLocationList}
+        </Select>
+      </div>
+    )
   );
 };
 

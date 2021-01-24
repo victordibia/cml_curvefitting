@@ -8,6 +8,9 @@ import Header from "./header/Header";
 import OfficeLocations from "./OfficeLocations/OfficeLocations";
 
 function Main() {
+  // const serverBasePath = window.location.protocol + "//" + window.location.host;
+  const serverBasePath = "http://localhost:5000";
+  const selections = { serverBasePath: serverBasePath };
   return (
     <HashRouter>
       <div className="flex flex-col h-screen  ">
@@ -16,7 +19,9 @@ function Main() {
           <Route
             exact
             path="/"
-            render={(props) => <OfficeLocations {...props} />}
+            render={(props) => (
+              <OfficeLocations {...props} selections={selections} />
+            )}
           />
         </main>
         <Footer />
