@@ -1,41 +1,9 @@
-import ReactGA from "react-ga";
-import { shuffle } from "lodash";
-ReactGA.initialize("UA-53030428-17");
-
-export function registerGAEvent(
-  componentName,
-  eventCategory,
-  eventAction,
-  componentLoadTime
-) {
-  let eventTime = new Date().getTime() - componentLoadTime;
-  if (window.location.hostname !== "localhost") {
-    console.log("GA", eventCategory, eventTime, eventAction, componentName);
-    ReactGA.event({
-      category: eventCategory,
-      action: eventAction,
-      value: eventTime,
-      label: componentName,
-    });
-  }
-}
-
 export function abbreviateString(value, maxLength) {
   if (value.length <= maxLength) {
     return value;
   } else {
     let retval = value.substring(0, maxLength) + " ..";
     return retval;
-  }
-}
-
-export function boundWidth(widthVal) {
-  if (widthVal < 0) {
-    return 0;
-  } else if (widthVal > 1) {
-    return 1;
-  } else {
-    return widthVal;
   }
 }
 
@@ -177,50 +145,4 @@ export function ColorArrayRGB() {
     [204, 235, 197],
   ];
   return colorArray;
-}
-
-export function checkInView(
-  container,
-  element,
-  partial,
-  containerOffset,
-  elementOffset
-) {
-  if (container) {
-    //Get container properties
-    let cTop = container.scrollTop;
-    let cBottom = cTop + container.clientHeight + containerOffset;
-
-    //Get element properties
-    let eTop = element.offsetTop + elementOffset;
-    let eBottom = eTop + element.clientHeight;
-
-    //Check if in view
-    let isTotal = eTop >= cTop && eBottom <= cBottom;
-    let isPartial =
-      partial &&
-      ((eTop < cTop && eBottom > cTop) ||
-        (eBottom > cBottom && eTop < cBottom));
-    return isTotal || isPartial;
-  } else {
-    return false;
-  }
-}
-
-export const LeaderLine = window.LeaderLine;
-export const animOptions = { duration: 800, timing: "ease" };
-export const greyColor = "rgba(189, 195, 199, 0.5)";
-export const blueColor = "rgba(0,98,255, 1)";
-
-export function shuffleData(data, info) {
-  let datasetContent = [];
-  const imageBasePath = process.env.PUBLIC_URL + "/assets/semsearch/datasets/";
-
-  for (const row of Object.keys(data)) {
-    for (const i of data[row]) {
-      const imagePath = imageBasePath + info.name + "/" + i + ".jpg";
-      datasetContent.push({ path: imagePath, index: i });
-    }
-  }
-  return shuffle(datasetContent);
 }

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./curate.css";
 
 import DeckGL from "@deck.gl/react";
 import { LineLayer } from "@deck.gl/layers";
 import { StaticMap } from "react-map-gl";
 import { MapView, FirstPersonView } from "@deck.gl/core";
+import OfficeSelector from "./OfficeSelector/OfficeSelector";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -25,6 +26,11 @@ const OfficeLocations = () => {
       targetPosition: [-122.41669, 37.781],
     },
   ];
+
+  useEffect(() => {
+    document.title = `Cloudera Covid Advisor | Locations `;
+  }, []);
+
   return (
     <div className=" h-full">
       {/* <div className="border">FareCalculator</div> */}
@@ -37,10 +43,8 @@ const OfficeLocations = () => {
           <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
         </MapView>
 
-        <div style={{ zIndex: "1" }}> Bongo </div>
-
-        <div style={{ position: "absolute", right: 30, top: 120, zIndex: 1 }}>
-          boingo
+        <div className="absolute left-4 top-16">
+          <OfficeSelector />
         </div>
       </DeckGL>
     </div>

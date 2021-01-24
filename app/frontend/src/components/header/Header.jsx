@@ -9,6 +9,7 @@
 
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { Icon } from "../helperfunctions/Icon";
 import "./header.css";
 
 const Header = () => {
@@ -21,11 +22,7 @@ const Header = () => {
           <div className="flex  h-full">
             <div className="h-full   flex flex-col justify-center mr-2 ml-2  ">
               <a href={process.env.PUBLIC_URL + "/#"}>
-                <img
-                  className="headericon"
-                  src="images/icon.png"
-                  alt="NeuralQA logo"
-                />
+                <Icon icon="cloudera" />
               </a>
             </div>
             <div className="apptitle  flex flex-col justify-center  mr-1">
@@ -39,6 +36,7 @@ const Header = () => {
                 Office Locations
               </NavLink>
             </div>
+
             {/* <div className="h100   flex flexjustifycenter  navbarlinks ">
               <NavLink exact to="/embeddings">
                 Embeddings{" "}

@@ -48,6 +48,9 @@ import os
 import numpy as np
 from PIL import Image
 import time
+import json
+from lib.utils import load_json
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -63,10 +66,26 @@ app = Flask(__name__, static_url_path='',
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# load locations and trend data from json
+locations = load_json(os.getcwd() + "/data/metadata/locations.json")
+trends = load_json(os.getcwd() + "/data/metadata/trends.json")
+
+print(locations)
+
 
 @app.route('/')
 def hello():
     return render_template('index.html')
+
+
+@app.route('/locations')
+def get_locations():
+    return jsonify(locations)
+
+
+@app.route('/trends')
+def get_trends():
+    return jsonify(trends)
 
 
 if __name__ == '__main__':
@@ -76,4 +95,4 @@ if __name__ == '__main__':
 
     args, unknown = parser.parse_known_args()
     port = args.port
-    app.run(port=port)
+    app.run(port=port, debug=True)

@@ -1,4 +1,6 @@
 import "./main.css";
+// import "./main.scss";
+import "antd/dist/antd.css";
 
 import { Route, HashRouter } from "react-router-dom";
 import Footer from "./footer/Footer";

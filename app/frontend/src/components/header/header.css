@@ -1,7 +1,7 @@
 .navbarlinks a.active:hover,
 .navbarlinks a.active,
 .navbarlinks.selected {
-  border-bottom: 4px #0062ff solid;
+  border-bottom: 4px #ff8400 solid;
 }
 .navbarlinks a {
   text-decoration: none;
@@ -38,7 +38,7 @@
 } */
 
 .headermain {
-  background: #161616;
+  background: #0b1316;
   position: fixed;
   top: 0;
   width: 100%;
