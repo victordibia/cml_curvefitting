@@ -40,6 +40,7 @@
 
 
 import os
+import json
 import urllib.request
 import zipfile
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
@@ -64,43 +65,12 @@ def unzip_file(zip_file_path, zip_file_destination):
         print("Zip file does not exist.", zip_file_path)
 
 
-def download_taxi_csv(year, month, s3_source="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_"):
-    file_url = s3_source + str(year) + "-" + str(month) + ".csv"
-    file_path = "data/files/" + str(year) + "_" + str(month) + ".csv"
-    if not os.path.isfile(file_path):
-        download_file(file_url, file_path)
+def save_json(file_path, data):
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
 
 
-def clean_data(df, valid_years):
-    cal = calendar()
-    df["pickup_date_only"] = df['tpep_pickup_datetime'].dt.normalize()
-    df["dropoff_date_only"] = df['tpep_dropoff_datetime'].dt.normalize()
-    holidays = cal.holidays(
-        start=df.pickup_date_only.min(), end=df.pickup_date_only.max())
-    df['holiday'] = (df['pickup_date_only'].isin(holidays)).astype(int)
-
-    df["trip_time"] = (df.tpep_dropoff_datetime -
-                       df.tpep_pickup_datetime).dt.total_seconds() / 60
-    df["month"] = df.tpep_pickup_datetime.dt.month
-    df["week"] = df.tpep_pickup_datetime.dt.isocalendar().week
-    df["dayofweek"] = df.tpep_pickup_datetime.dt.dayofweek
-    df["isweekday"] = (
-        (df.tpep_pickup_datetime.dt.dayofweek) // 5 == 1).astype(float)
-    df["hour"] = df.tpep_pickup_datetime.dt.hour
-    df["year"] = df.tpep_pickup_datetime.dt.year
-    df = df[df.trip_time >= 0]  # drop rows with negative trip times
-    df = df[df.trip_distance >= 0]  # drop rows with negative trip distance
-    df = df[df.fare_amount >= 0]  # drop rows with negative fare
-    df = df.dropna(how='any', axis='rows')
-
-    df = df[df.trip_distance < 100]
-    df = df[df.trip_time < 100]
-    df = df[df.tolls_amount < 100]
-    df = df[df.fare_amount < 100]
-    df = df[df.mta_tax < 30]
-
-    # remove any years outside current consideration
-    df = df[df.year.isin(valid_years)]
-    df = df[df.passenger_count > 0]  # remove trips with 0 or less passengers!
-
-    return df
+def load_json(file_path):
+    with open(file_path) as f:
+        data = json.load(f)
+        return data
