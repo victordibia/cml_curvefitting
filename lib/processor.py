@@ -56,6 +56,14 @@ class Processor():
     def load_data(self, data_path="data/data.csv"):
         self.df = pd.read_csv(data_path)
 
+    def get_color(self, val):
+        if (val > 500):
+            return {"color": "red", "label": "High"}
+        if (val < 500 and val > 250):
+            return {"color": "yellow", "label": "Medium"}
+        if (val < 250):
+            return {"color": "green", "label": "Low"}
+
     def preprocess(self, save_path="data/metadata"):
 
         self.df.columns = [x.split(".")[1] for x in self.df.columns]
@@ -88,7 +96,9 @@ class Processor():
 
         # keep track of slope
         slope_data = (
-            {"trend": trend[-sample_size:].tolist(), "slope_pred": slope_preds.tolist(), "slope": slope, "intercept": intercept})
+            {"trend": trend[-sample_size:].tolist(),
+             "slope_preds": slope_preds.tolist(), "slope": slope,
+             "risk": self.get_color(slope), "intercept": intercept})
         return slope_data
 
     def get_poly_trends(self, polynomial_degree=4, window_size=14, save_path="data/metadata"):

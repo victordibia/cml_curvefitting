@@ -46,10 +46,11 @@ from flask_cors import CORS, cross_origin
 import logging
 import os
 import numpy as np
+import pandas as pd
 from PIL import Image
 import time
 import json
-from lib.utils import load_json
+from lib.utils import load_json, get_trends_by_name
 
 
 logging.basicConfig(level=logging.INFO)
@@ -69,8 +70,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # load locations and trend data from json
 locations = load_json(os.getcwd() + "/data/metadata/locations.json")
 trends = load_json(os.getcwd() + "/data/metadata/trends.json")
-
-print(locations)
+trends_df = pd.DataFrame(trends)
 
 
 @app.route('/')
@@ -85,7 +85,10 @@ def get_locations():
 
 @app.route('/trends')
 def get_trends():
-    return jsonify(trends)
+    location_name = request.args.get('locationName')
+    result = get_trends_by_name(trends_df, location_name)
+    print(location_name, "locname")
+    return jsonify(result)
 
 
 if __name__ == '__main__':

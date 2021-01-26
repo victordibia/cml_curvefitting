@@ -17,9 +17,12 @@ const Footer = () => {
         style={{ zIndex: 999000 }}
         className=" container-fluid text-gray-500 text-sm w-full p-2"
       >
-        Made with <span className="text-red-500">&#9829;</span> by{" "}
-        <a href="http://victordibia.com/" target="blank">
-          Victor Dibia
+        Made with <span className="text-red-500">&#9829;</span> at{" "}
+        <a
+          href="https://www.cloudera.com/products/fast-forward-labs-research.html"
+          target="blank"
+        >
+          Cloudera Fast Forward Labs
         </a>
         .
       </div>

@@ -37,7 +37,7 @@ export function loadJSONData(url) {
       });
     })
     .catch(function (err) {
-      console.log("Fetch Error :-S", err);
+      return Promise.reject(err);
     });
 }
 
@@ -129,6 +129,24 @@ export function ColorArray() {
     "#8fff4f",
   ];
   return colorArray;
+}
+
+export function textToRGB(text) {
+  let color = [0, 0, 0];
+  switch (text) {
+    case "red":
+      color = [239, 68, 68];
+      break;
+    case "yellow":
+      color = [245, 158, 11];
+      break;
+    case "green":
+      color = [16, 185, 129];
+      break;
+    default:
+      color = [0, 0, 0];
+  }
+  return color;
 }
 
 export function ColorArrayRGB() {

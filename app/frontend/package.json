@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.10.3",
     "autoprefixer": "^9.8.6",
+    "d3": "^6.5.0",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.20",
     "postcss": "^7.0.35",
