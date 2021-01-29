@@ -44,6 +44,7 @@ import json
 import urllib.request
 import zipfile
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
+
 import pandas as pd
 
 
@@ -87,14 +88,11 @@ def get_trends_by_name(df, location_name):
     Returns:
         [dict]: dict of matched values
     """
-    if location_name != "" and location_name != None:
-        df = (df[df.location == location_name]).to_dict(orient="records")
-
-    return {} if df == [] else df[0]
+    if (location_name):
+        df = (df[df.location == location_name])
+    df = df.to_dict(orient="records")
+    return (df)
 
 
 # df = pd.read_json("data/metadata/trends.json")
-# caloc = get_trends_by_name(df, "US-California-Santa oClara (HQ)")
-# caloc = {"color": caloc["slope_data"]["risk"]
-#          ["color"], "slope": caloc["slope_data"]["slope"]}
-# print(caloc)
+# print(get_trends_by_name(df, "US-California-Santa oi Clara (HQ)"))

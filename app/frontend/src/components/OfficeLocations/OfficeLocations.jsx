@@ -3,6 +3,7 @@ import "./officelocation.css";
 
 import DeckGL from "@deck.gl/react";
 import { ScatterplotLayer, LineLayer, ArcLayer } from "@deck.gl/layers";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import { StaticMap } from "react-map-gl";
 import { MapView } from "@deck.gl/core";
 import OfficeSelector from "./OfficeSelector/OfficeSelector";
@@ -123,6 +124,13 @@ const OfficeLocations = (props) => {
           <MapView id="map" width="100%" controller={true}>
             <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
           </MapView>
+
+          <HeatmapLayer
+            id="heatmap-plot"
+            data={locationCordinates}
+            opacity={0.2}
+            getPosition={(d) => d.coords}
+          />
 
           <ScatterplotLayer
             id="locations-scatter-plot"

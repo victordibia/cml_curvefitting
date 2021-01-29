@@ -1,23 +1,21 @@
-# CML Covid Tracker 
+# Parametric Curve Fitting for Trend Analysis
 
-This repo demonstrate steps in examples on how production ML pipelines can be orchestrated using Cloudera Tools. 
+For many use cases that involve time series data, the ability to correctly infer the trend within the data can translate to business value. This repository uses Covid19 cases data and demonstrates the use of parametric curve fitting methods (e.g. polynomial functions, additive regression models). 
 
-- Track the trajectory of Covid Confirmed Cases 
-- Explore curve fitting approaches for modelling trend
-- Explore recent trend as signal for decision making
+ 
 
 ## Architecture and Components
 
-![System Architecture](docs/images/taxiarchitecture.png)
+<!-- ![System Architecture](docs/images/taxiarchitecture.png) -->
 
 - Data [John Hopkins Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
--  
+ 
 
-## TODOs
+<!-- ## TODOs
 
 Initial high level list of tasks: 
 
 - [ ] Data exploration: Explore interesting data insights, data transformation tasks etc 
 - [ ] Model Training: Explore a set of models, automated hyperparameter search, distributed training, model evaluation etc
 - [ ] Model Serving: Promoting good models to production, serving predictions over an api enddpoint 
-- [ ] Front end: User interface for exploring predictions.
+- [ ] Front end: User interface for exploring predictions. -->
