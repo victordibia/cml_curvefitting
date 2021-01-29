@@ -8,7 +8,7 @@ For many use cases that involve time series data, the ability to correctly infer
 
 <!-- ![System Architecture](docs/images/taxiarchitecture.png) -->
 
-- Data [John Hopkins Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+- Data [New York Times Covid Data](https://github.com/nytimes/covid-19-data)
  
 
 <!-- ## TODOs
