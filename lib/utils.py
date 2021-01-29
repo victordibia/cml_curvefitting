@@ -46,6 +46,7 @@ import zipfile
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
 
 import pandas as pd
+import pickle
 
 
 def mkdir(dir_path):
@@ -76,6 +77,16 @@ def load_json(file_path):
     with open(file_path) as f:
         data = json.load(f)
         return data
+
+
+def save_pickle(file_path, data):
+    with open(file_path, 'wb') as f:
+        pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def load_pickle(file_path):
+    with open(file_path, 'rb') as f:
+        return pickle.load(f)
 
 
 def get_trends_by_name(df, location_name):

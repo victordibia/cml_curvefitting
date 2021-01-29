@@ -43,8 +43,10 @@ import pandas as pd
 import os
 import numpy as np
 import logging
-from .utils import mkdir, save_json
+from .utils import mkdir, save_json, save_pickle
 import json
+import fbprophet
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +54,10 @@ logger = logging.getLogger(__name__)
 class Processor():
     def __init__(self):
         self.trends = None
+        self.prophet_models = {}
+        mkdir("data")
+        mkdir("data/metadata")
+        mkdir("data/models")
 
     def load_data(self, data_path="data/data.csv"):
         self.df = pd.read_csv(data_path)
@@ -68,21 +74,25 @@ class Processor():
 
         self.df.columns = [x.split(".")[1] for x in self.df.columns]
         self.df["updated"] = pd.to_datetime(self.df['updated'])
+        self.df["work_location_postal_code"] = self.df.work_location + \
+            "-" + self.df.work_postal_code
+
         self.df.sort_values(by='updated', inplace=True, ascending=True)
         self.df["confirmed"] = self.df['confirmed'].fillna(0)
 
         # some metadata
-        locations = (self.df.drop_duplicates(['work_location'], keep="first")[
-            ["work_location", "geo_long", "geo_lat"]]).to_dict(orient="records")
-        work_locations = (self.df[~self.df.work_location.str.contains("-Remote")].drop_duplicates(
-            ['work_location'], keep="first")[["work_location", "geo_long", "geo_lat"]]).to_dict(orient="records")
+        locations = (self.df.drop_duplicates(['work_location_postal_code'], keep="first")[
+            ["work_location_postal_code", "geo_long", "geo_lat"]]).to_dict(orient="records")
+        work_locations = (self.df[~self.df.work_location_postal_code.str.contains("-Remote")].drop_duplicates(
+            ['work_location_postal_code'], keep="first")[["work_location_postal_code", "geo_long", "geo_lat"]]).to_dict(orient="records")
 
-        self.locations = list(self.df.work_location.unique())
+        self.locations = list(self.df.work_location_postal_code.unique())
         locations_dict = {"work": work_locations, "all": locations}
+
         save_json(os.path.join(
             save_path, "locations.json"), locations_dict)
 
-    def get_slope(self, trend, locations, sample_size=14):
+    def get_slope(self, trend, sample_size=14):
         sample_indices = list(range(sample_size))
         if len(trend) < sample_size:
             sample_size = len(trend)
@@ -101,11 +111,61 @@ class Processor():
              "risk": self.get_color(slope), "intercept": intercept})
         return slope_data
 
+    def train_forecast_model(self, df):
+        p_df = pd.DataFrame(df[["updated", "confirmed"]])
+        p_df.columns = ['ds', 'y']
+        p_df['ds'] = pd.to_datetime(p_df['ds'])
+        model = fbprophet.Prophet()
+        model.fit(p_df)
+        return model
+
+    def get_forcast(self, model, start_date, end_date):
+        future = pd.DataFrame(pd.date_range(
+            start_date, end_date).tolist(), columns=["ds"])
+        forecast = model.predict(future)
+        return forecast
+
+    def get_prophet_trends(self, locations, window_size=14, save_path="data"):
+        trend_holder = []
+        model_holder = {}
+        for i in tqdm(range(len(locations))):
+            samp = self.df[self.df.work_location_postal_code == locations[i]]
+
+            model = self.train_forecast_model(samp)
+            # keep track of model for given location
+            model_holder[locations[i]] = model
+
+            forecast = self.get_forcast(model, min(
+                samp.updated), max(samp.updated))
+            # ax = axes[int(i/num_cols), i%num_cols]
+
+            # ax.plot(samp.updated, samp.confirmed, label="data")
+            # ax.plot(forecast.ds, forecast.yhat.tolist(), '-k', label="trend" , color='orange')
+            # ax.fill_between(forecast.ds, forecast.yhat_lower.tolist(), forecast.yhat_upper.tolist(),   alpha=0.2, label="uncertainty")
+
+            slope_data = self.get_slope(
+                forecast.yhat.tolist(), sample_size=window_size)
+
+            trend_holder.append(
+                {"data": list(samp.confirmed),
+                 "location": locations[i],
+                 "window_size": window_size,
+                 "trend_pred": forecast.yhat.tolist(),
+                 "trend_pred_upper": forecast.yhat_upper.tolist(),
+                 "trend_pred_lower": forecast.yhat_lower.tolist(),
+                 "slope_data": slope_data})
+
+        self.prophet_models = model_holder
+        self.trends = trend_holder
+        save_json(os.path.join(
+            save_path, "metadata/trends.json"), self.trends)
+        save_pickle("models/fbmodel.pickle", self.prophet_models)
+
     def get_poly_trends(self, polynomial_degree=4, window_size=14, save_path="data/metadata"):
         trend_holder = []  # data + trend for all locs in location
         locations = self.locations
         for i in range(len(locations)):
-            xdf = self.df[self.df.work_location == locations[i]]
+            xdf = self.df[self.df.work_location_postal_code == locations[i]]
 
             # difference in days between rows
             date_diff = (xdf.updated - xdf.updated.shift(1)).dt.days
@@ -119,7 +179,7 @@ class Processor():
             trend_pred = trendpoly(indices)  # get fitted trend results
 
             slope_data = self.get_slope(
-                trend_pred, locations, sample_size=window_size)
+                trend_pred, sample_size=window_size)
 
             trend_holder.append(
                 {"data": list(xdf.confirmed),
