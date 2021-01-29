@@ -8,7 +8,8 @@ For many use cases that involve time series data, the ability to correctly infer
 
 <!-- ![System Architecture](docs/images/taxiarchitecture.png) -->
 
-- Data [New York Times Covid Data](https://github.com/nytimes/covid-19-data)
+- Data: [Our world in Data](https://github.com/owid/covid-19-data/tree/master/public/data/), [US New York Times Covid Data](https://github.com/nytimes/covid-19-data) 
+ 
  
 
 <!-- ## TODOs
