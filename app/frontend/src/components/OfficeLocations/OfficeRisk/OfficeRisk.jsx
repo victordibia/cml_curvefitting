@@ -6,7 +6,7 @@ import uniqBy from "lodash/uniqBy";
 const { Option } = Select;
 
 const OfficeRisk = (props) => {
-  const locations = props.locations.map((x) => x.work_location);
+  const locations = props.locations.map((x) => x.work_location_postal_code);
   const trends = sortBy(
     props.trends.filter((x) => locations.includes(x.location)),
     "slope_data.slope"

@@ -1,0 +1,54 @@
+name: Parametric Curve Fitting for Trend Analysis
+description: Parametric Curve Fitting for Trend Analysis
+author: Cloudera Inc.
+specification_version: 1.0
+prototype_version: 1.0
+date: "2021-01-21"
+api_version: 1
+
+
+
+tasks:
+  - type: create_job
+    name: Install dependencies
+    entity_label: install_deps
+    script: cml/install_dependencies.py
+    arguments: None
+    short_summary: Job to install dependencies and download training data.
+    cpu: 2
+    memory: 4
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+    kernel: python3
+
+  - type: run_job
+    entity_label: install_deps
+    short_summary: Running install dependencies training job.
+    long_summary: >-
+      Running the job to install dependencies.
+
+  - type: create_job
+    name: Load data and train model
+    entity_label: load_data
+    script: cml/load_data.py
+    arguments: None
+    short_summary: Job to load data and train model
+    cpu: 2
+    memory: 4
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+    kernel: python3
+
+  - type: run_job
+    entity_label: load_data
+    short_summary: Running job to load data and train model.
+    long_summary: >-
+      Running job to load data and train model.
+
+  - type: start_application
+    name: Application to serve UI
+    subdomain: curvefitting
+    script: app/backend/app.py
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
+    kernel: python3

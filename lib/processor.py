@@ -44,11 +44,12 @@ import os
 import numpy as np
 import logging
 from .utils import mkdir, save_json, save_pickle
-import json
 import fbprophet
 from tqdm import tqdm
 
-logger = logging.getLogger(__name__)
+import logging
+import sys
+logging.disable(sys.maxsize)
 
 
 class Processor():
@@ -59,20 +60,50 @@ class Processor():
         mkdir("data/metadata")
         mkdir("data/models")
 
+    class suppress_stdout_stderr(object):
+        '''
+        A context manager for doing a "deep suppression" of stdout and stderr in
+        Python, i.e. will suppress all print, even if the print originates in a
+        compiled C/Fortran sub-function.
+        This will not suppress raised exceptions, since exceptions are printed
+        to stderr just before a script exits, and after the context manager has
+        exited (at least, I think that is why it lets exceptions through).
+
+        '''
+
+        def __init__(self):
+            # Open a pair of null files
+            self.null_fds = [os.open(os.devnull, os.O_RDWR) for x in range(2)]
+            # Save the actual stdout (1) and stderr (2) file descriptors.
+            self.save_fds = [os.dup(1), os.dup(2)]
+
+        def __enter__(self):
+            # Assign the null pointers to stdout and stderr.
+            os.dup2(self.null_fds[0], 1)
+            os.dup2(self.null_fds[1], 2)
+
+        def __exit__(self, *_):
+            # Re-assign the real stdout/stderr back to (1) and (2)
+            os.dup2(self.save_fds[0], 1)
+            os.dup2(self.save_fds[1], 2)
+            # Close the null files
+            for fd in self.null_fds + self.save_fds:
+                os.close(fd)
+
     def load_data(self, data_path="data/data.csv"):
         self.df = pd.read_csv(data_path)
 
     def get_color(self, val):
         if (val > 500):
             return {"color": "red", "label": "High"}
-        if (val < 500 and val > 250):
+        if (val < 500 and val > 140):
             return {"color": "yellow", "label": "Medium"}
-        if (val < 250):
+        if (val < 140):
             return {"color": "green", "label": "Low"}
 
     def preprocess(self, save_path="data/metadata"):
 
-        self.df.columns = [x.split(".")[1] for x in self.df.columns]
+        # self.df.columns = [x.split(".")[1] for x in self.df.columns]
         self.df["updated"] = pd.to_datetime(self.df['updated'])
         self.df["work_location_postal_code"] = self.df.work_location + \
             "-" + self.df.work_postal_code
@@ -111,13 +142,25 @@ class Processor():
              "risk": self.get_color(slope), "intercept": intercept})
         return slope_data
 
-    def train_forecast_model(self, df):
+    def train_forecast_model(self, df, confidence_interval=0.95):
+        """Train a Prophet forecast model. Confidence interval default is 
+        fairly strict at 95% to highlight uncertainties in the model.
+
+        Args:
+            df ([type]): [description]
+            confidence_interval (float, optional): [description]. Defaults to 0.95.
+
+        Returns:
+            [type]: [description]
+        """
         p_df = pd.DataFrame(df[["updated", "confirmed"]])
         p_df.columns = ['ds', 'y']
         p_df['ds'] = pd.to_datetime(p_df['ds'])
-        model = fbprophet.Prophet()
-        model.fit(p_df)
-        return model
+        model = fbprophet.Prophet(interval_width=confidence_interval)
+
+        with self.suppress_stdout_stderr():
+            model.fit(p_df)
+            return model
 
     def get_forcast(self, model, start_date, end_date):
         future = pd.DataFrame(pd.date_range(
@@ -125,9 +168,10 @@ class Processor():
         forecast = model.predict(future)
         return forecast
 
-    def get_prophet_trends(self, locations, window_size=14, save_path="data"):
+    def get_prophet_trends(self, window_size=14, save_path="data"):
         trend_holder = []
         model_holder = {}
+        locations = self.locations
         for i in tqdm(range(len(locations))):
             samp = self.df[self.df.work_location_postal_code == locations[i]]
 
@@ -144,7 +188,7 @@ class Processor():
             # ax.fill_between(forecast.ds, forecast.yhat_lower.tolist(), forecast.yhat_upper.tolist(),   alpha=0.2, label="uncertainty")
 
             slope_data = self.get_slope(
-                forecast.yhat.tolist(), sample_size=window_size)
+                forecast.yhat, sample_size=window_size)
 
             trend_holder.append(
                 {"data": list(samp.confirmed),
@@ -159,7 +203,8 @@ class Processor():
         self.trends = trend_holder
         save_json(os.path.join(
             save_path, "metadata/trends.json"), self.trends)
-        save_pickle("models/fbmodel.pickle", self.prophet_models)
+        save_pickle(os.path.join(
+            save_path, "models/fbmodels.pickle"), self.prophet_models)
 
     def get_poly_trends(self, polynomial_degree=4, window_size=14, save_path="data/metadata"):
         trend_holder = []  # data + trend for all locs in location

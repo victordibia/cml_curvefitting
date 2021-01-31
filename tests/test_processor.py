@@ -19,7 +19,7 @@ def test_preprocess():
 def test_trends():
     proc.load_data()
     proc.preprocess()
-    proc.get_poly_trends()
+    proc.get_prophet_trends()
     assert(os.path.isfile("data/metadata/trends.json"))
 
 

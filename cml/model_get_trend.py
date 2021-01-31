@@ -1,43 +1,57 @@
 
 from lib import Processor
-from lib.utils import load_json, get_trends_by_name
+from lib.utils import load_pickle
 import pandas as pd
-import os
 
-# Generate trend data when endpoint is spun up.
-# How do we update this trend data?
-#   Just restart this end point or rerun the snippet below to generate the trend results file.
-
-proc = Processor()
-proc.load_data()
-proc.preprocess()
-proc.get_poly_trends()
+# Load trained models when model endpoint is spun up
+models = load_pickle("data/models/fbmodels.pickle")
 
 
-# load trend data
-trends = load_json(os.getcwd() + "/data/metadata/trends.json")
-trends_df = pd.DataFrame(trends)
+def get_predictions(location_name, end_date):
+    # get the first model that has the given location name (two models may have same location name but diff zip codes)
+    result = [None, None, None, None]
+    found_models = [x for x in models.keys() if location_name in x]
+    model = models[found_models[0]]
+
+    start_date = pd.date_range(end=end_date, periods=14).tolist()[
+        0]  # we will predict for last 14 days
+    if model:
+        proc = Processor()
+        forecast = proc.get_forcast(model, start_date, end_date)
+        mean_percentage_uncertainty = ((
+            (forecast.yhat_upper - forecast.yhat_lower))/2 / (forecast.yhat.abs())).mean()
+
+        slope_data = proc.get_slope(
+            forecast.yhat, sample_size=14)
+
+        # if mean_percentage_uncertainty > 10% of predicted value, we say this is low confidence.
+        confidence = "high"
+        if (mean_percentage_uncertainty > 0.1):
+            confidence = "low"
+
+        result = [slope_data["slope"], slope_data["risk"]
+                  ["label"], slope_data["risk"]["color"], confidence]
+    return result
 
 
 def predict(args):
-    location_name = str(args.get('location_name'))
-    result = get_trends_by_name(trends_df, location_name)
+    rows = args.get("data").get("rows")
+    # assumption of row[0] being location_name
 
-    # filter to return only color and slope
-    if result:
-        result = {"color": result["slope_data"]["risk"]
-                  ["color"], "slope": result["slope_data"]["slope"]}
-    return result
+    end_date = args.get('params', {}).get('updated.start')
 
-# Sample output for a valid location
-# {'color': 'red', 'slope': 522.7048223423567}
+    result = {
+        "colnames": ['slope', 'risk', 'color', 'confidence'],
+        "coltypes": ['REAL', 'STRING', 'STRING', 'STRING']
+    }
 
-# Sample output for a invalid location
-# {}
+    outRows = []
+    for row in rows:
 
+        location_name = str(row[0])
+        print('location is', location_name)
 
-# result = (get_trends_by_name(trends_df, "US-California-Santa Cldara (HQ)"))
-# if result:
-#     result = {"color": result["slope_data"]["risk"]
-#               ["color"], "slope": result["slope_data"]["slope"]}
-# print(result)
+        outRows.append(get_predictions(location_name, end_date))
+
+    result['rows'] = outRows
+    return {"version": "1.0", "data": result}

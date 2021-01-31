@@ -8,7 +8,6 @@ import { StaticMap } from "react-map-gl";
 import { MapView } from "@deck.gl/core";
 import OfficeSelector from "./OfficeSelector/OfficeSelector";
 import LocationChart from "./LocationChart/LocationChart";
-import { Popover } from "antd";
 
 import { loadJSONData, textToRGB } from "../helperfunctions/HelperFunctions";
 import OfficeRisk from "./OfficeRisk/OfficeRisk";
@@ -39,7 +38,7 @@ const OfficeLocations = (props) => {
 
   const santaClara =
     locations[locationType].filter((x) =>
-      x.work_location.includes("Santa Clara")
+      x.work_location_postal_code.includes("Santa Clara")
     )[0] || {};
 
   const santaClaraRisk = trendsDictionary["US-California-Santa Clara (HQ)"];
@@ -61,13 +60,13 @@ const OfficeLocations = (props) => {
       sourcePosition: santaClaraLatLong,
       targetPosition: targetPosition,
       sourceRisk: santaClaraRisk,
-      targetRisk: trendsDictionary[x.work_location],
+      targetRisk: trendsDictionary[x.work_location_postal_code],
     });
 
     locationCordinates.push({
       coords: targetPosition,
-      risk: trendsDictionary[x.work_location],
-      location: x.work_location,
+      risk: trendsDictionary[x.work_location_postal_code],
+      location: x.work_location_postal_code,
     });
   });
 
@@ -85,6 +84,7 @@ const OfficeLocations = (props) => {
     locPromise
       .then(function (data) {
         if (data) {
+          console.log(data);
           setLocations(data);
         }
       })
