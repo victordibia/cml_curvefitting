@@ -29,10 +29,10 @@ tasks:
 
   - type: create_job
     name: Load data and train model
-    entity_label: load_data
-    script: cml/load_data.py
+    entity_label: train_model
+    script: cml/train_models.py
     arguments: None
-    short_summary: Job to load data and train model
+    short_summary: Job to load data and train curve fitting models.
     cpu: 2
     memory: 4
     environment:
@@ -40,10 +40,10 @@ tasks:
     kernel: python3
 
   - type: run_job
-    entity_label: load_data
-    short_summary: Running job to load data and train model.
+    entity_label: train_model
+    short_summary: Running job to load data and train curve fitting models.
     long_summary: >-
-      Running job to load data and train model.
+      Running job to load data and curve fitting train models.
 
   - type: start_application
     name: Application to serve UI

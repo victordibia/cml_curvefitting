@@ -1,6 +1,6 @@
 # Parametric Curve Fitting for Trend Analysis
 
-For many use cases that involve time series data, the ability to correctly infer the trend within the data can translate to business value. This repository uses Covid19 cases data and demonstrates the use of parametric curve fitting methods (e.g. polynomial functions, additive regression models). 
+For many use cases that involve time series data, the ability to correctly infer the trend within the data can translate to business value. This repository  demonstrates the use of parametric curve fitting methods (e.g. polynomial functions, additive regression models) in analyzing trend within time series data and forecasting future values. 
 
  
 
