@@ -98,4 +98,4 @@ if __name__ == '__main__':
 
     args, unknown = parser.parse_known_args()
     port = args.port
-    app.run(port=port, debug=True)
+    app.run(port=port)
