@@ -1,10 +1,7 @@
-import pickle
-from lib.utils import load_pickle
-from lib.processor import Processor
-import matplotlib.pyplot as plt
-import pandas as pd
 
-models = load_pickle("data/models/fbmodels.pickle")
+
+from lib.processor import Processor
+
 proc = Processor()
 proc.load_data()
 proc.preprocess()
