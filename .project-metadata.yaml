@@ -34,7 +34,7 @@ tasks:
     arguments: None
     short_summary: Job to load data and train curve fitting models.
     cpu: 2
-    memory: 8
+    memory: 10
     environment:
       TASK_TYPE: CREATE/RUN_JOB
     kernel: python3
