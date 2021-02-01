@@ -190,11 +190,15 @@ class Processor():
             slope_data = self.get_slope(
                 forecast.yhat, sample_size=window_size)
 
+            mean_percentage_uncertainty = ((
+                (forecast.yhat_upper - forecast.yhat_lower))/2 / (forecast.yhat.abs())).mean()
+
             trend_holder.append(
                 {"data": list(samp.confirmed),
                  "location": locations[i],
                  "window_size": window_size,
                  "trend_pred": forecast.yhat.tolist(),
+                 "trend_uncertainty": mean_percentage_uncertainty,
                  "trend_pred_upper": forecast.yhat_upper.tolist(),
                  "trend_pred_lower": forecast.yhat_lower.tolist(),
                  "slope_data": slope_data})

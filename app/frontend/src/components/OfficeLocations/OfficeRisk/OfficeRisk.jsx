@@ -121,10 +121,7 @@ const OfficeRisk = (props) => {
         >
           <div className=" inline-block    p-3 ">
             <div className="mb-2  flex">
-              <span className="font-semibold flex-grow ">
-                {" "}
-                Office Location Risk
-              </span>
+              <span className="font-semibold flex-grow "> Location Trend</span>
               <span
                 onClick={clickShowMore}
                 className="text-xs mt-1 mr-3 hover:underline pb-1 cursor-pointer"

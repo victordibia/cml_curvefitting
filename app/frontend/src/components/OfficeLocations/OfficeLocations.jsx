@@ -41,7 +41,8 @@ const OfficeLocations = (props) => {
       x.work_location_postal_code.includes("Santa Clara")
     )[0] || {};
 
-  const santaClaraRisk = trendsDictionary["US-California-Santa Clara (HQ)"];
+  const santaClaraRisk =
+    trendsDictionary["US-California-Santa Clara (HQ)-94306"];
   const santaClaraLatLong = [santaClara.geo_long, santaClara.geo_lat];
   // Data to be used by the LineLayer
   const lineData = [
@@ -84,7 +85,6 @@ const OfficeLocations = (props) => {
     locPromise
       .then(function (data) {
         if (data) {
-          console.log(data);
           setLocations(data);
         }
       })
@@ -110,17 +110,42 @@ const OfficeLocations = (props) => {
 
   // console.log(locations[locationType]);
   function locationClick(e) {
-    console.log("location clickedd", e.object);
+    // console.log("location clickedd", e.object);
     const tooltipitem = document.getElementById("tooltipitem");
     tooltipitem.style.top = e.y - 10 + "px";
     tooltipitem.style.left = e.x + 15 + "px";
     setSelectedLocation(e.object);
   }
 
+  let lastHoveredLocation = "";
+  let isHovering = false;
+  function locationMouseOut(e) {
+    isHovering = Boolean(e);
+    if (e.object?.location && e.object?.location !== lastHoveredLocation) {
+      lastHoveredLocation = e.object?.location;
+
+      const tooltipitem = document.getElementById("tooltipitem");
+      tooltipitem.style.top = e.y - 10 + "px";
+      tooltipitem.style.left = e.x + 15 + "px";
+
+      const tooltipbarClass = "h-2 mb-1 bg-" + e.object.risk?.color + "-500";
+
+      document.getElementById("tooltiplocation").textContent =
+        e.object?.location;
+      document.getElementById("tooltipbar").className = tooltipbarClass;
+    }
+  }
+
   return (
     <div className="">
       <div className="  ">
-        <DeckGL initialViewState={INITIAL_VIEW_STATE} controller={true}>
+        <DeckGL
+          getCursor={({ isDragging }) =>
+            isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
+          }
+          initialViewState={INITIAL_VIEW_STATE}
+          controller={true}
+        >
           <MapView id="map" width="100%" controller={true}>
             <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
           </MapView>
@@ -143,6 +168,7 @@ const OfficeLocations = (props) => {
             getFillColor={(d) => textToRGB(d.risk?.color)}
             getLineColor={(d) => [0, 0, 0]}
             onClick={locationClick}
+            onHover={locationMouseOut}
             onMouseEnter={locationClick}
           />
           {/* <LineLayer id="line-layer" data={lineData} /> */}
@@ -166,9 +192,10 @@ const OfficeLocations = (props) => {
       >
         {" "}
         <div
+          id="tooltipbar"
           className={"h-2 mb-1 bg-" + selectedLocation.risk?.color + "-500"}
         ></div>
-        {selectedLocation.location}
+        <span id="tooltiplocation">{selectedLocation.location}</span>
       </div>
 
       <div className="absolute ml-2 ">
