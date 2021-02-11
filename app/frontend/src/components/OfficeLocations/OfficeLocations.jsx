@@ -188,7 +188,7 @@ const OfficeLocations = (props) => {
 
       <div
         id="tooltipitem"
-        className="absolute -left-10 p-3 shadow rounded-sm bg-white"
+        className="pointer-events-none absolute -left-10 p-3 shadow rounded-sm bg-white"
       >
         {" "}
         <div

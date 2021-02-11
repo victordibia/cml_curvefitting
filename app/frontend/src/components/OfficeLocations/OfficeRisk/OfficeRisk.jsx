@@ -115,24 +115,32 @@ const OfficeRisk = (props) => {
         <div
           id="mainriskdiv"
           // onMouseLeave={divMouseLeave}
-          className={
-            "riskdiv overflow-auto mt-3 bg-white flex w-max  rounded-sm  bg-opacity-90"
-          }
+          className={"relative w-max "}
         >
-          <div className=" inline-block    p-3 ">
-            <div className="mb-2  flex">
-              <span className="font-semibold flex-grow "> Location Trend</span>
-              <span
-                onClick={clickShowMore}
-                className="text-xs mt-1 mr-3 hover:underline pb-1 cursor-pointer"
-              >
-                {" "}
-                {showDetails ? "< Hide Details" : "Show Details > "}
-              </span>
-            </div>
-            <div className="flex"> {labelList} </div>
-            <div className="  overflow-auto"></div>
+          <div className=" flex w-full bg-opacity-90  absolute p-3 pb-2  bg-white mb-4   ">
+            {" "}
+            <span className="font-semibold  pt-1 pb-0 flex-grow">
+              {" "}
+              Location Trend
+            </span>
+            <span
+              onClick={clickShowMore}
+              className="ml-3 p-2 rounded-sm hover:bg-gray-200 bg-gray-100x  border-gray-300 bg-white  text-xs      cursor-pointer"
+            >
+              {showDetails ? "< Hide Details" : "Show Details > "}
+            </span>
           </div>
+          {/* <span
+            onClick={clickShowMore}
+            className="absolute p-2   rounded-sm hover:bg-gray-100  border-gray-300 bg-white  right-3 top-3 text-xs   hover:underline   cursor-pointer"
+          >
+            {" "}
+            {showDetails ? "< Hide Details" : "Show Details > "}
+          </span> */}
+          <div className="riskdiv overflow-auto mt-3 pt-14 bg-white   w-max  rounded-sm  bg-opacity-90    p-3 ">
+            <div className="flex"> {labelList} </div>
+          </div>
+
           <div className="bg-red-500 bg-green-500 bg-yellow-500 border-red-500  border-yellow-500 border-green-500"></div>
         </div>
       )}
