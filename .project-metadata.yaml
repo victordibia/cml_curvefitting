@@ -44,6 +44,37 @@ tasks:
     short_summary: Running job to load data and train curve fitting models.
     long_summary: >-
       Running job to load data and curve fitting train models.
+      
+  - type: create_model
+    name: Curve Fitting Model Endpoint
+    entity_label: curvefit_model
+    description: This model api endpoint   predicts trends
+    short_summary: Create the curve fitting api endpoint
+    access_key_environment_variable: SHTM_ACCESS_KEY
+    default_replication_policy:
+      type: fixed
+      num_replicas: 1
+
+  - type: build_model
+    name: Curve Fitting Model Endpoint
+    entity_label: curvefit_model
+    comment: Build curve fitting model
+    examples:
+      - request: {"feature" : "US,DCA,BOS,1,16"}
+        response: 1
+    target_file_path: cml/model_get_trend.py
+    target_function_name: predict
+    kernel: python3
+    environment_variables:
+      TASK_TYPE: CREATE/BUILD/DEPLOY_MODEL
+
+  - type: deploy_model
+    name: curvefit_model
+    entity_label: curvefit_model
+    cpu: 1
+    gpu: 0
+    environment_variables:
+      TASK_TYPE: CREATE/BUILD/DEPLOY_MODEL
 
   - type: start_application
     name: Application to serve UI
