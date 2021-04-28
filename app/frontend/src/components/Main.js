@@ -8,8 +8,8 @@ import Header from "./header/Header";
 import OfficeLocations from "./OfficeLocations/OfficeLocations";
 
 function Main() {
-  // const serverBasePath = window.location.protocol + "//" + window.location.host;
-  const serverBasePath = "http://localhost:5000";
+  const serverBasePath = window.location.protocol + "//" + window.location.host;
+  // const serverBasePath = "http://localhost:5000";
   const selections = { serverBasePath: serverBasePath };
   return (
     <HashRouter>
