@@ -1,8 +1,7 @@
 pystan 
 convertdate 
 lunarcalendar 
-holidays 
-tqdm==4.48.0
+holidays  
 numpy==1.18.5
 fbprophet==0.7.1
 pandas==1.1.0
