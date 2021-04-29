@@ -45,23 +45,23 @@ tasks:
   #   long_summary: >-
   #     Running job to load data and curve fitting train models.
       
-  # - type: create_model
-  #   name: Curve Fitting Model Endpoint
-  #   entity_label: curvefit_model
-  #   description: This model api endpoint   predicts trends
-  #   short_summary: Create the curve fitting api endpoint
-  #   access_key_environment_variable: SHTM_ACCESS_KEY
-  #   default_replication_policy:
-  #     type: fixed
-  #     num_replicas: 1
+  - type: create_model
+    name: Curve Fitting Model Endpoint
+    entity_label: curvefit_model
+    description: This model api endpoint   predicts trends
+    short_summary: Create the curve fitting api endpoint
+    access_key_environment_variable: SHTM_ACCESS_KEY
+    default_replication_policy:
+      type: fixed
+      num_replicas: 1
 
   - type: build_model
     name: Curve Fitting Model Endpoint
     entity_label: curvefit_model
     comment: Build curve fitting model
     examples:
-      - request: { "data": { "colnames": [  "location_name" ], "coltypes": [ "STRING" ], "rows": [ [ "US-California-Santa Clara (HQ)"]] } }
-        response: 1
+      - request: {}
+        response: ""
     target_file_path: cml/model_get_trend_file.py
     target_function_name: predict
     kernel: python3
