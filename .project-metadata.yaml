@@ -60,7 +60,7 @@ tasks:
     entity_label: curvefit_model
     comment: Build curve fitting model
     examples:
-      - request: {"feature" : "US,DCA,BOS,1,16"}
+      - request: { "data": { "colnames": [  "location_name" ], "coltypes": [ "STRING" ], "rows": [ [ "US-California-Santa Clara (HQ)"]] } }
         response: 1
     target_file_path: cml/model_get_trend_file.py
     target_function_name: predict
