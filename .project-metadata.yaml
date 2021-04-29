@@ -65,14 +65,15 @@ tasks:
     target_file_path: cml/model_get_trend_file.py
     target_function_name: predict
     kernel: python3
+    cpu: 2
+    memory: 8
     environment_variables:
       TASK_TYPE: CREATE/BUILD/DEPLOY_MODEL
 
   - type: deploy_model
     name: curvefit_model
     entity_label: curvefit_model
-    cpu: 2
-    memory: 8
+    cpu: 2 
     gpu: 0
     environment_variables:
       TASK_TYPE: CREATE/BUILD/DEPLOY_MODEL
