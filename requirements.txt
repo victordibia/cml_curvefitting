@@ -1,9 +1,9 @@
-pystan 
-convertdate 
-lunarcalendar 
-holidays  
+# pystan 
+# convertdate 
+# lunarcalendar 
+# holidays  
 numpy==1.18.5
-fbprophet==0.7.1
+# fbprophet==0.7.1
 pandas==1.1.0
 Flask==1.1.2
 matplotlib==3.3.2
