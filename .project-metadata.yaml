@@ -9,51 +9,51 @@ api_version: 1
 
 
 tasks:
-  - type: create_job
-    name: Install dependencies
-    entity_label: install_deps
-    script: cml/install_dependencies.py
-    arguments: None
-    short_summary: Job to install dependencies.
-    cpu: 2
-    memory: 4
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
-    kernel: python3
+  # - type: create_job
+  #   name: Install dependencies
+  #   entity_label: install_deps
+  #   script: cml/install_dependencies.py
+  #   arguments: None
+  #   short_summary: Job to install dependencies.
+  #   cpu: 2
+  #   memory: 4
+  #   environment:
+  #     TASK_TYPE: CREATE/RUN_JOB
+  #   kernel: python3
 
-  - type: run_job
-    entity_label: install_deps
-    short_summary: Running job to dependencies job.
-    long_summary: >-
-      Running the job to install dependencies.
+  # - type: run_job
+  #   entity_label: install_deps
+  #   short_summary: Running job to dependencies job.
+  #   long_summary: >-
+  #     Running the job to install dependencies.
 
-  - type: create_job
-    name: Load data and train model
-    entity_label: train_model
-    script: cml/train_models.py
-    arguments: None
-    short_summary: Job to load data and train curve fitting models.
-    cpu: 2
-    memory: 10
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
-    kernel: python3
+  # - type: create_job
+  #   name: Load data and train model
+  #   entity_label: train_model
+  #   script: cml/train_models.py
+  #   arguments: None
+  #   short_summary: Job to load data and train curve fitting models.
+  #   cpu: 2
+  #   memory: 10
+  #   environment:
+  #     TASK_TYPE: CREATE/RUN_JOB
+  #   kernel: python3
 
-  - type: run_job
-    entity_label: train_model
-    short_summary: Running job to load data and train curve fitting models.
-    long_summary: >-
-      Running job to load data and curve fitting train models.
+  # - type: run_job
+  #   entity_label: train_model
+  #   short_summary: Running job to load data and train curve fitting models.
+  #   long_summary: >-
+  #     Running job to load data and curve fitting train models.
       
-  - type: create_model
-    name: Curve Fitting Model Endpoint
-    entity_label: curvefit_model
-    description: This model api endpoint   predicts trends
-    short_summary: Create the curve fitting api endpoint
-    access_key_environment_variable: SHTM_ACCESS_KEY
-    default_replication_policy:
-      type: fixed
-      num_replicas: 1
+  # - type: create_model
+  #   name: Curve Fitting Model Endpoint
+  #   entity_label: curvefit_model
+  #   description: This model api endpoint   predicts trends
+  #   short_summary: Create the curve fitting api endpoint
+  #   access_key_environment_variable: SHTM_ACCESS_KEY
+  #   default_replication_policy:
+  #     type: fixed
+  #     num_replicas: 1
 
   - type: build_model
     name: Curve Fitting Model Endpoint
