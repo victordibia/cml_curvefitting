@@ -62,7 +62,7 @@ tasks:
     examples:
       - request: {"feature" : "US,DCA,BOS,1,16"}
         response: 1
-    target_file_path: cml/model_get_trend.py
+    target_file_path: cml/model_get_trend_file.py
     target_function_name: predict
     kernel: python3
     environment_variables:
